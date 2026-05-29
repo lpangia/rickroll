@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Redirection</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      background: #fff;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      font-family: Georgia, serif;
+      color: #111;
+    }
+    .video-wrapper {
+      width: 100%;
+      max-width: 640px;
+      aspect-ratio: 16/9;
+    }
+    iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+      display: block;
+    }
+    .countdown {
+      margin-top: 24px;
+      font-size: 15px;
+      color: #555;
+      letter-spacing: 0.03em;
+    }
+    .countdown span {
+      font-weight: bold;
+      color: #111;
+    }
+  </style>
+</head>
+<body>
+  <div class="video-wrapper">
+    <iframe
+      src="https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=1&mute=1"
+      allow="autoplay; encrypted-media"
+      allowfullscreen>
+    </iframe>
+  </div>
+  <p class="countdown">Redirection dans <span id="timer">10</span> secondes…</p>
+
+  <script>
+    const CAGNOTTE_URL = "https://LIEN_DE_TA_CAGNOTTE_ICI";
+    let t = 10;
+    const el = document.getElementById("timer");
+    const interval = setInterval(() => {
+      t--;
+      el.textContent = t;
+      if (t <= 0) {
+        clearInterval(interval);
+        window.location.href = CAGNOTTE_URL;
+      }
+    }, 1000);
+  </script>
+</body>
+</html>
