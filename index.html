@@ -1,64 +1,150 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Redirection</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chargement...</title>
   <style>
+    @import url('https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&display=swap');
+
     * { margin: 0; padding: 0; box-sizing: border-box; }
+
     body {
-      background: #fff;
+      background: #0a0a0a;
+      color: #e0e0e0;
+      font-family: 'Space Mono', monospace;
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+
+    /* ── ÉCRAN DE CHARGEMENT ── */
+    #loader {
+      position: fixed;
+      inset: 0;
+      background: #0a0a0a;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      min-height: 100vh;
-      font-family: Georgia, serif;
-      color: #111;
+      gap: 32px;
+      z-index: 10;
+      cursor: pointer;
+      transition: opacity 0.6s ease;
     }
-    .video-wrapper {
-      width: 100%;
-      max-width: 640px;
-      aspect-ratio: 16/9;
+
+    #loader.hidden {
+      opacity: 0;
+      pointer-events: none;
     }
-    video {
-      width: 100%;
+
+    .logo {
+      font-size: 13px;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: #555;
+    }
+
+    .bar-container {
+      width: 260px;
+      height: 2px;
+      background: #1e1e1e;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .bar {
       height: 100%;
-      display: block;
+      background: #e0e0e0;
+      width: 0%;
+      animation: fill 2.4s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+    }
+
+    @keyframes fill {
+      0%   { width: 0%; }
+      60%  { width: 72%; }
+      85%  { width: 88%; }
+      100% { width: 100%; }
+    }
+
+    .label {
+      font-size: 11px;
+      color: #333;
+      letter-spacing: 0.15em;
+      animation: blink 1.2s step-end infinite;
+    }
+
+    @keyframes blink {
+      0%, 100% { opacity: 1; }
+      50%       { opacity: 0; }
+    }
+
+    .click-hint {
+      font-size: 11px;
+      color: #444;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      opacity: 0;
+      animation: fadeIn 0.8s ease 2.4s forwards;
+    }
+
+    @keyframes fadeIn {
+      to { opacity: 1; }
+    }
+
+    /* ── VIDÉO ── */
+    #video-wrap {
+      display: none;
+      width: 100vw;
+      height: 100vh;
       background: #000;
     }
-    .countdown {
-      margin-top: 24px;
-      font-size: 15px;
-      color: #555;
-      letter-spacing: 0.03em;
-    }
-    .countdown span {
-      font-weight: bold;
-      color: #111;
+
+    #video-wrap video {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
     }
   </style>
 </head>
 <body>
-  <div class="video-wrapper">
-    <video id="vid" autoplay muted playsinline>
-      <source src="https://raw.githubusercontent.com/lpangia/rickroll/main/0530.mp4" type="video/mp4"/>
-    </video>
+
+  <div id="loader">
+    <div class="logo">Chargement du contenu</div>
+    <div class="bar-container">
+      <div class="bar"></div>
+    </div>
+    <div class="label">initialisation...</div>
+    <div class="click-hint">— cliquer pour continuer —</div>
   </div>
-  <p class="countdown">Redirection dans <span id="timer">10</span> secondes…</p>
+
+  <div id="video-wrap">
+    <video id="vid" src="https://raw.githubusercontent.com/lpangia/rickroll/main/0530.mp4"
+           playsinline preload="auto"></video>
+  </div>
 
   <script>
-    const CAGNOTTE_URL = "https://www.leetchi.com/fr/c/cagnotte-pour-manon-et-jeremy-1508300?utm_source=copylink&utm_medium=social_sharing";
-    let t = 10;
-    const el = document.getElementById("timer");
-    const interval = setInterval(() => {
-      t--;
-      el.textContent = t;
-      if (t <= 0) {
-        clearInterval(interval);
-        window.location.href = CAGNOTTE_URL;
-      }
-    }, 1000);
+    const loader = document.getElementById('loader');
+    const wrap   = document.getElementById('video-wrap');
+    const vid    = document.getElementById('vid');
+
+    function launch() {
+      loader.classList.add('hidden');
+      wrap.style.display = 'block';
+      vid.muted = false;
+      vid.volume = 1;
+      vid.play().catch(() => {
+        // fallback si le navigateur refuse encore
+        vid.muted = true;
+        vid.play();
+      });
+    }
+
+    loader.addEventListener('click', launch);
+    loader.addEventListener('touchend', launch);
   </script>
+
 </body>
 </html>
